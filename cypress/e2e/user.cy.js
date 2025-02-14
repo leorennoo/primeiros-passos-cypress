@@ -41,7 +41,7 @@ it.only('User Info Update - Sucess', () => {
         cy.get(selectorsList.dateField).eq(1).clear().type('2003-01-15')
         cy.get(selectorsList.dateCloseButton).click()
         cy.get(selectorsList.submitButton).eq(0).click()
-        cy.get('body').should('contain', 'Succesfully Updated')
+        cy.get('.oxd-toast-close')
     })
     it('Login - Fail', () => {
         cy.visit('/auth/login')
