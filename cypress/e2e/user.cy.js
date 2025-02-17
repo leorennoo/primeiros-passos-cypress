@@ -1,53 +1,25 @@
 import userData from '../fixtures/userData.json'
+import LoginPage from '../pages/loginPage'
+import DashboardPage from '../pages/dashboardPage'
+import MenuPage from '../pages/menuPage'
+import MyInfoPage from '../pages/myInfoPage'
+
+const loginPage = new LoginPage()
+const dashboardPage = new DashboardPage()
+const menuPage = new MenuPage()
+const myInfoPage = new MyInfoPage()
 
 describe('Orange HRM Tests', () => {
-
-    const selectorsList = {
-        usernameField: "[name='username']",
-        passwordField: "[name='password']",
-        loginButton: "[type='submit']",
-        sectionTitleTopBar: '.oxd-text--h6',
-        dashboardGrid: '.orangehrm-dashboard-grid',
-        wrongCredentialAlert: '.oxd-alert-content',
-        myInfoButton: "[href='/web/index.php/pim/viewMyDetails']",
-        firstNameField: "[name='firstName']",
-        middleNameField: "[name='middleName']",
-        lastNameField: "[name='lastName']",
-        genericField: '.oxd-input--active',
-        dateField: "[placeholder='yyyy-dd-mm']",
-        customTestField: "[options='']",
-        dateCloseButton: '.--close',
-        submitButton: "[type='submit']",
-        succesfullUpdated: '.oxd-toast'
-    }
-
-it.only('User Info Update - Sucess', () => {
-        cy.visit('/auth/login')
-        cy.get(selectorsList.usernameField).type(userData.userSucess.username)
-        cy.get(selectorsList.passwordField).type(userData.userSucess.password)
-        cy.get(selectorsList.loginButton).click()
-        cy.location('pathname').should('equal', '/web/index.php/dashboard/index')
-        cy.get(selectorsList.dashboardGrid)
-        cy.get(selectorsList.myInfoButton).click()
-        cy.wait(2000)
-        cy.get(selectorsList.firstNameField).clear().type('Marcos')
-        cy.get(selectorsList.middleNameField).clear().type('Arruda')
-        cy.get(selectorsList.lastNameField).clear().type('De Souza')
-        cy.get(selectorsList.genericField).eq(3).clear().type('EmployeeT')
-        cy.get(selectorsList.genericField).eq(4).clear().type('OtherIDT')
-        cy.get(selectorsList.genericField).eq(5).clear().type('182365')
-        cy.get(selectorsList.dateField).eq(0).clear().type('2028-03-20')
-        cy.get(selectorsList.dateCloseButton).click()
-        cy.get(selectorsList.dateField).eq(1).clear().type('2003-01-15')
-        cy.get(selectorsList.dateCloseButton).click()
-        cy.get(selectorsList.submitButton).eq(0).click()
-        cy.get('.oxd-toast-close')
+it('User Info Update - Sucess', () => {
+        loginPage.acessLoginPage()
+        loginPage.loginWithAnyUser(userData.userSucess.username, userData.userSucess.password)
+        dashboardPage.checkDashboardPage()
+        menuPage.acessMyInfo()
+        myInfoPage.editMyInfo()
     })
-    it('Login - Fail', () => {
-        cy.visit('/auth/login')
-        cy.get(selectorsList.usernameField).type(userData.userFail.username)
-        cy.get(selectorsList.passwordField).type(userData.userFail.password)
-        cy.get(selectorsList.loginButton).click()
-        cy.get(selectorsList.wrongCredentialAlert)
+    it.only('Login - Fail', () => {
+        loginPage.acessLoginPage()
+        loginPage.loginWithAnyUser(userData.userFail.username, userData.userFail.password)
+        cy.get('.oxd-alert-content').should('be.visible')
     })
 })
